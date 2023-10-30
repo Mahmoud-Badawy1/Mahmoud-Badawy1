@@ -1,0 +1,216 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Zeymur Blog',
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+      ),
+      home: MainPage(),
+    );
+  }
+}
+
+class MainPage extends StatefulWidget {
+  @override
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  int _selectedIndex = 0;
+  final List<String> postImages = [
+    "https://images.unsplash.com/photo-1502680390469-be75c86b636f?auto=format&fit=crop&q=80&w=870&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "https://images.unsplash.com/photo-1530870110042-98b2cb110834?auto=format&fit=crop&q=80&w=870&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "https://images.unsplash.com/photo-1505459668311-8dfac7952bf0?auto=format&fit=crop&q=80&w=870&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "https://images.unsplash.com/photo-1455264745730-cb3b76250ae8?auto=format&fit=crop&q=80&w=844&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    "https://images.unsplash.com/photo-1535182463927-440364075d9c?auto=format&fit=crop&q=80&w=872&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  ];
+  final List<Widget> _widgetOptions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _widgetOptions.add(HomePage(postImages: postImages));
+    _widgetOptions.add(ProfilePage());
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Zeymur Blog'),
+        actions: [IconButton(icon: Icon(Icons.search), onPressed: () {})],
+      ),
+      body: _widgetOptions[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle),
+            label: 'Profile',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+      ),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  final List<String> postImages;
+
+  HomePage({required this.postImages});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: _buildActivityButtons(),
+          ),
+        ),
+        Expanded(child: _buildBlogList()),
+      ],
+    );
+  }
+
+  List<Widget> _buildActivityButtons() {
+    return [
+      Column(
+        children: [
+          Icon(Icons.surfing, size: 40),
+          Text('Surfing'),
+        ],
+      ),
+      Column(
+        children: [
+          Icon(Icons.directions_boat, size: 40),
+          Text('Sailing'),
+        ],
+      ),
+      Column(
+        children: [
+          Icon(Icons.sports_basketball, size: 40),
+          Text('Basketball'),
+        ],
+      ),
+      Column(
+        children: [
+          Icon(Icons.sports_tennis, size: 40),
+          Text('Tennis'),
+        ],
+      ),
+    ];
+  }
+
+  Widget _buildBlogList() {
+    return ListView.builder(
+      itemCount: postImages.length,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Card(
+            elevation: 5,
+            child: Column(
+              children: [
+                Image.network(postImages[index]),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: const [
+                      Text('Post Title Here',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
+                      Spacer(),
+                      Icon(Icons.thumb_up, color: Colors.blue),
+                      SizedBox(width: 5),
+                      Text('123'),
+                      SizedBox(width: 10),
+                      Icon(Icons.comment, color: Colors.blue),
+                      SizedBox(width: 5),
+                      Text('456'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class ProfilePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.green,
+        title: Text('My Account'),
+      ),
+      body: Column(
+        children: [
+          SizedBox(height: 40),
+          CircleAvatar(
+            radius: 60,
+            backgroundImage: NetworkImage(
+                'https://images.unsplash.com/photo-1568602471122-7832951cc4c5'),
+          ),
+          SizedBox(height: 20),
+          Text(
+            'Jane Doe',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 40),
+          buildProfileOption('Bookmarks', Icons.bookmark),
+          buildProfileOption('My Comments', Icons.comment),
+          buildProfileOption('Account Details', Icons.person),
+          buildProfileOption('Change Password', Icons.lock),
+          Spacer(),
+          Container(
+            width: double.infinity,
+            margin: EdgeInsets.all(16),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 16),
+                primary: Colors.green,
+              ),
+              onPressed: () {},
+              child: Text('Log Out'),
+            ),
+          ),
+          SizedBox(height: 30),
+        ],
+      ),
+    );
+  }
+
+  ListTile buildProfileOption(String title, IconData icon) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.grey),
+      title: Text(title),
+      trailing: Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+      onTap: () {},
+    );
+  }
+}
